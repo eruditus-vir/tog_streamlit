@@ -105,7 +105,6 @@ def main():
 
     # PIL LOAD
     pil_image = Image.open(uploaded_file)
-    uploaded_file.close()  # may need to move down
 
     # Prepare image for adversarial attack
     total_process = 14
@@ -166,13 +165,14 @@ def main():
     drawn_images_dict[tab_names[0]] = AdversarialExample(title=tab_names[0],
                                                          image=pil_image)
     image_processing_bar.progress(100)
-    del image_processing_bar
+    image_processing_bar.empty()
 
     # Tab plotting
     tab_containers = st.tabs(tab_names)
     for i, tab_name in enumerate(tab_names):
         tab_container = tab_containers[i]
         drawn_images_dict[tab_name].streamlit_show(tab_container)
+    uploaded_file.close()  # may need to move down
 
 
 if __name__ == '__main__':

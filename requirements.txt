@@ -11,5 +11,3 @@ tensorboardX==2.0
 h5py==2.10.0
 jupyter
 streamlit
-pandas
-urllib
