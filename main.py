@@ -110,38 +110,38 @@ def main():
     total_process = 14
     image_processing_bar = st.progress(0)
     x_query, x_meta = letterbox_image_padded(pil_image, size=detector.model_img_size)
-    image_processing_bar.progress(100. / total_process * 1)
+    image_processing_bar.progress(int(100. / total_process) * 1)
     # initial detection
     detections_query = detector.detect(x_query, conf_threshold=detector.confidence_thresh_default)
 
     # apply various attacks
-    image_processing_bar.progress(100. / total_process * 2)
+    image_processing_bar.progress(int(100. / total_process) * 2)
     x_adv_fabrication = tog_fabrication(victim=detector, x_query=x_query, n_iter=N_ITER, eps=EPS, eps_iter=EPS_ITER)
-    image_processing_bar.progress(100. / total_process * 3)
+    image_processing_bar.progress(int(100. / total_process) * 3)
     x_adv_mislabeling_ml = tog_mislabeling(victim=detector, x_query=x_query, target='ml', n_iter=N_ITER, eps=EPS,
                                            eps_iter=EPS_ITER)
-    image_processing_bar.progress(100. / total_process * 4)
+    image_processing_bar.progress(int(100. / total_process) * 4)
     x_adv_mislabeling_ll = tog_mislabeling(victim=detector, x_query=x_query, target='ll', n_iter=N_ITER, eps=EPS,
                                            eps_iter=EPS_ITER)
-    image_processing_bar.progress(100. / total_process * 5)
+    image_processing_bar.progress(int(100. / total_process) * 5)
     x_adv_vanishing = tog_vanishing(victim=detector, x_query=x_query, n_iter=N_ITER, eps=EPS, eps_iter=EPS_ITER)
-    image_processing_bar.progress(100. / total_process * 6)
+    image_processing_bar.progress(int(100. / total_process) * 6)
     x_adv_untargeted = tog_untargeted(victim=detector, x_query=x_query, n_iter=N_ITER, eps=EPS, eps_iter=EPS_ITER)
-    image_processing_bar.progress(100. / total_process * 7)
+    image_processing_bar.progress(int(100. / total_process) * 7)
 
     # apply detections again after attack
     detections_adv_fabrication = detector.detect(x_adv_fabrication, conf_threshold=detector.confidence_thresh_default)
-    image_processing_bar.progress(100. / total_process * 8)
+    image_processing_bar.progress(int(100. / total_process) * 8)
     detections_adv_mislabeling_ml = detector.detect(x_adv_mislabeling_ml,
                                                     conf_threshold=detector.confidence_thresh_default)
-    image_processing_bar.progress(100. / total_process * 9)
+    image_processing_bar.progress(int(100. / total_process) * 9)
     detections_adv_mislabeling_ll = detector.detect(x_adv_mislabeling_ll,
                                                     conf_threshold=detector.confidence_thresh_default)
-    image_processing_bar.progress(100. / total_process * 10)
+    image_processing_bar.progress(int(100. / total_process) * 10)
     detections_adv_untargeted = detector.detect(x_adv_untargeted, conf_threshold=detector.confidence_thresh_default)
-    image_processing_bar.progress(100. / total_process * 11)
+    image_processing_bar.progress(int(100. / total_process) * 11)
     detections_adv_vanishing = detector.detect(x_adv_vanishing, conf_threshold=detector.confidence_thresh_default)
-    image_processing_bar.progress(100. / total_process * 12)
+    image_processing_bar.progress(int(100. / total_process) * 12)
 
     # result
     tab_names = ['Original Image',
