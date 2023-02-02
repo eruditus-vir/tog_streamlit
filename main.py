@@ -19,9 +19,10 @@ def write_title():
     This project was built using Streamlit and Keras 
     to demonstrate YOLO Object detection (Darknet) and TOG adversarial attack.
     
-    This YOLO object Detection project can detect 80 objects(i.e classes)
-    in either a video or image. The full list of the classes can be found 
+    The COCO-based YOLO object Detection project can detect 80 types of object (classes). The full list of the classes can be found 
     [here](https://github.com/KaranJagtiani/YOLO-Coco-Dataset-Custom-Classes-Extractor/blob/main/classes.txt)
+    
+    The ABO-based YOLO object Detection project can detect 4 types of object on the seas. The types are Powerboat, Sailboat, Ship, and Stationary. 
     
     Detail of TOG attack can be found 
     [here](https://github.com/git-disl/TOG)""")
