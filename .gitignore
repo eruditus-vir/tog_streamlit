@@ -24,5 +24,7 @@ archive.zip
 *~
 .*.sw?
 
+.DS_Store
+.python-version
 
 model_weights/*

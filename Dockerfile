@@ -7,4 +7,3 @@ COPY . $APP_PATH
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 EXPOSE 8000
-CMD ["poetry","run","jupyter-notebook", "--ip=0.0.0.0", "--port=8000"]
