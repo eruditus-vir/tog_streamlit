@@ -10,6 +10,9 @@ EPS = 8 / 255.  # Hyperparameter: epsilon in L-inf norm
 EPS_ITER = 2 / 255.  # Hyperparameter: attack learning rate
 N_ITER = 10  # Hyperparameter: number of attack iterations
 
+weights = 'model_weights/YOLOv3_Darknet53.h5'  # TODO: Change this path to the victim model's weights
+detector = YOLOv3_Darknet53(weights=weights)
+
 
 def find_font_size(text, font, image, target_width_ratio):
     tested_font_size = 100
@@ -82,8 +85,6 @@ def draw_images_with_detections(detections_dict):
 
 
 def main():
-    weights = 'model_weights/YOLOv3_Darknet53.h5'  # TODO: Change this path to the victim model's weights
-    detector = YOLOv3_Darknet53(weights=weights)
     write_title()
     uploaded_file = st.file_uploader(
         "Choose an image to upload: {}".format(" ".join(["png", "jpg"])),
