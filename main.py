@@ -99,16 +99,16 @@ def draw_images_with_detections(detections_dict):
 def set_initial_session_state():
     # Store the initial value of widgets in session state
     if "detection_model" not in st.session_state:
-        st.session_state.detection_model = ModelName.COCO
+        st.session_state.detection_model = ModelName.COCO.name
 
 
 def set_sidebar_select_box():
     st.sidebar.selectbox(
         "Choose Detection Model",
-        (ModelName.COCO.name, ModelName.ABO.name),
+        [ModelName.COCO.name, ModelName.ABO.name],
+        index=0,
         key="detection_model"
     )
-    print(st.session_state.detection_model)
 
 
 def main():
