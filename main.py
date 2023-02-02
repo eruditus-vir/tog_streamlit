@@ -48,10 +48,10 @@ class ModelName(Enum):
 
 class DetectionModelFactory:
     @classmethod
-    def from_model_name(cls, model_name: ModelName) -> YOLOv3:
-        if model_name == ModelName.COCO:
+    def from_model_name(cls, model_name: str) -> YOLOv3:
+        if model_name == ModelName.COCO.name:
             return YOLOv3_Darknet53(weights="model_weights/YOLOv3_Darknet53.h5")
-        elif model_name == ModelName.ABO:
+        elif model_name == ModelName.ABO.name:
             return YOLOv3_Darknet53_ABO(weights='model_weights/YOLOv3_Darknet53_ABO.h5')
 
 
@@ -105,9 +105,10 @@ def set_initial_session_state():
 def set_sidebar_select_box():
     st.sidebar.selectbox(
         "Choose Detection Model",
-        (ModelName.COCO, ModelName.ABO),
+        (ModelName.COCO.name, ModelName.ABO.name),
         key="detection_model"
     )
+    print(st.session_state.detection_model)
 
 
 def main():
