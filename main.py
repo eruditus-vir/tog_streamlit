@@ -6,6 +6,7 @@ from tog.attacks import *
 import matplotlib.colors as mcolors
 from PIL import ImageDraw, ImageFont
 from enum import Enum
+from streamlit.script_runner import RerunException
 
 EPS = 8 / 255.  # Hyperparameter: epsilon in L-inf norm
 EPS_ITER = 2 / 255.  # Hyperparameter: attack learning rate
@@ -210,4 +211,7 @@ def main():
 
 if __name__ == '__main__':
     # CMD ["jupyter-notebook", "--ip=0.0.0.0", "--port=8000", "--allow-root"]
-    main()
+    try:
+        main()
+    except Exception:  # in some cases there are unknown tensorflow issue currently
+        raise RerunException
