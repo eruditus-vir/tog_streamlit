@@ -268,3 +268,13 @@ class YOLOv3_Darknet53_COCO(YOLOv3):
         print(len(self.classes))
         super().__init__(weights, yolo_darknet53,
                          model_img_size, confidence_thresh_default, confidence_thresh_eval)
+
+
+# ABOShips SuperClass Dataset
+class YOLOv3_Darknet53_ABO(YOLOv3):
+    classes = ['Powerboat', 'Sailboat', 'Ship', 'Stationary']
+
+    def __init__(self, weights, model_img_size=(416, 416), confidence_thresh_default=0.20, confidence_thresh_eval=0.01):
+        print(len(self.classes))
+        super().__init__(weights, yolo_darknet53,
+                         model_img_size, confidence_thresh_default, confidence_thresh_eval)

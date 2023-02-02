@@ -1,31 +1,15 @@
 import streamlit as st
 from dataset_utils.preprocessing import letterbox_image_padded
-from models.yolov3 import YOLOv3_Darknet53
+from models.yolov3 import YOLOv3_Darknet53, YOLOv3_Darknet53_ABO, YOLOv3
 from PIL import Image
 from tog.attacks import *
 import matplotlib.colors as mcolors
 from PIL import ImageDraw, ImageFont
+from enum import Enum
 
 EPS = 8 / 255.  # Hyperparameter: epsilon in L-inf norm
 EPS_ITER = 2 / 255.  # Hyperparameter: attack learning rate
 N_ITER = 10  # Hyperparameter: number of attack iterations
-
-weights = 'model_weights/YOLOv3_Darknet53.h5'  # TODO: Change this path to the victim model's weights
-detector = YOLOv3_Darknet53(weights=weights)
-
-
-def find_font_size(text, font, image, target_width_ratio):
-    tested_font_size = 100
-    tested_font = ImageFont.truetype(font, tested_font_size)
-    observed_width, observed_height = get_text_size(text, image, tested_font)
-    estimated_font_size = tested_font_size / (observed_width / image.width) * target_width_ratio
-    return round(estimated_font_size)
-
-
-def get_text_size(text, image, font):
-    im = Image.new('RGB', (image.width, image.height))
-    draw = ImageDraw.Draw(im)
-    return draw.textsize(text, font)
 
 
 def write_title():
@@ -57,6 +41,34 @@ class AdversarialExample:
             st.image(self.image)
 
 
+class ModelName(Enum):
+    COCO = "COCO"
+    ABO = "ABO"
+
+
+class DetectionModelFactory:
+    @classmethod
+    def from_model_name(cls, model_name: ModelName) -> YOLOv3:
+        if model_name == ModelName.COCO:
+            return YOLOv3_Darknet53(weights="model_weights/YOLOv3_Darknet53.h5")
+        elif model_name == ModelName.ABO:
+            return YOLOv3_Darknet53_ABO(weights='model_weights/YOLOv3_Darknet53_ABO.h5')
+
+
+def find_font_size(text, font, image, target_width_ratio):
+    tested_font_size = 100
+    tested_font = ImageFont.truetype(font, tested_font_size)
+    observed_width, observed_height = get_text_size(text, image, tested_font)
+    estimated_font_size = tested_font_size / (observed_width / image.width) * target_width_ratio
+    return round(estimated_font_size)
+
+
+def get_text_size(text, image, font):
+    im = Image.new('RGB', (image.width, image.height))
+    draw = ImageDraw.Draw(im)
+    return draw.textsize(text, font)
+
+
 def draw_images_with_detections(detections_dict):
     colors = list(mcolors.CSS4_COLORS.values())
     images_dict = {}
@@ -84,7 +96,23 @@ def draw_images_with_detections(detections_dict):
     return images_dict
 
 
+def set_initial_session_state():
+    # Store the initial value of widgets in session state
+    if "detection_model" not in st.session_state:
+        st.session_state.detection_model = ModelName.COCO
+
+
+def set_sidebar_select_box():
+    st.sidebar.selectbox(
+        "Choose Detection Model",
+        (ModelName.COCO, ModelName.ABO),
+        key="detection_model"
+    )
+
+
 def main():
+    set_initial_session_state()
+    set_sidebar_select_box()
     write_title()
     uploaded_file = st.file_uploader(
         "Choose an image to upload: {}".format(" ".join(["png", "jpg"])),
@@ -93,7 +121,7 @@ def main():
     # uploading section
     show_uploaded_image = st.empty()
 
-    if not uploaded_file:
+    if not uploaded_file or uploaded_file is None:
         show_uploaded_image.info("Please choose an image to upload: {}".format(" ".join(["png", "jpg"])))
         return
     # garbage clean up
@@ -104,11 +132,14 @@ def main():
     gc.collect()
 
     # PIL LOAD
+    image_processing_bar = st.progress(1)
+    detector = DetectionModelFactory.from_model_name(st.session_state.detection_model)
+
     pil_image = Image.open(uploaded_file)
 
     # Prepare image for adversarial attack
     total_process = 14
-    image_processing_bar = st.progress(0)
+
     x_query, x_meta = letterbox_image_padded(pil_image, size=detector.model_img_size)
     image_processing_bar.progress(int(100. / total_process) * 1)
     # initial detection

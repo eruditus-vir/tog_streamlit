@@ -4,6 +4,7 @@ ARG APP_PATH=/app
 
 WORKDIR $APP_PATH
 COPY . $APP_PATH
+RUN mkdir $APP_PATH/model_weights
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 EXPOSE 8000
