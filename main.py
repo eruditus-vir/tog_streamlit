@@ -119,15 +119,15 @@ def main():
     set_sidebar_select_box()
     write_title()
     uploaded_file = st.file_uploader(
-        "Choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif"])),
-        type=["png", "jpg", "heic", "avif"])
+        "Choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif", "heif"])),
+        type=["png", "jpg", "heic", "avif", "heif"])
 
     # uploading section
     show_uploaded_image = st.empty()
 
     if not uploaded_file or uploaded_file is None:
         show_uploaded_image.info(
-            "Please choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif"])))
+            "Please choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif", "heif"])))
         return
     # garbage clean up
     import gc
