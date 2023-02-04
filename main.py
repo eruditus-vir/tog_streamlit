@@ -135,11 +135,11 @@ def main():
         if name == 'tab_container':
             del name
     gc.collect()
-
-    if 'heif' in uploaded_file.name.lower():
+    if 'heif' in uploaded_file.name.lower() or 'heic' in uploaded_file.name.lower():
         register_heif_opener()
     elif 'avif' in uploaded_file.name.lower():
         register_avif_opener()
+
     # PIL LOAD
     image_processing_bar = st.progress(1)
     detector = DetectionModelFactory.from_model_name(st.session_state.detection_model)
