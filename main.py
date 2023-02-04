@@ -7,6 +7,7 @@ import matplotlib.colors as mcolors
 from PIL import ImageDraw, ImageFont
 from enum import Enum
 from pillow_heif import register_heif_opener, register_avif_opener
+import logging
 
 register_heif_opener()
 register_avif_opener()
@@ -121,7 +122,7 @@ def main():
     write_title()
     uploaded_file = st.file_uploader(
         "Choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif"])),
-        type=["png", "jpg", "heic", "avif", "HEIC"])
+        type=["png", "jpg", "heic", "avif"])
 
     # uploading section
     show_uploaded_image = st.empty()
@@ -216,5 +217,6 @@ if __name__ == '__main__':
     # CMD ["jupyter-notebook", "--ip=0.0.0.0", "--port=8000", "--allow-root"]
     try:
         main()
-    except Exception:  # in some cases there are unknown tensorflow issue currently
+    except Exception as e:  # in some cases there are unknown tensorflow issue currently
+        logging.error(e)
         st.experimental_rerun()

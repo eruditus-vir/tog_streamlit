@@ -1,0 +1,27 @@
+version: '3'
+services:
+    streamlit_app:
+        build:
+            dockerfile: ./Dockerfile
+            context: ./
+        volumes:
+            - /home/ec2-user/model_weights:/app/model_weights
+        ports:
+            - 8000:8000
+        restart: unless-stopped
+
+    https-portal:
+        image: steveltn/https-portal:1.22
+        depends_on:
+            - streamlit_app
+        ports:
+            - '80:80'
+            - '443:443'
+        restart: unless-stopped
+        environment:
+            DOMAINS: 'example.go.ro -> streamlit_app:8000'
+        volumes:
+            - https-portal-data:/var/lib/https-portal
+
+volumes:
+  https-portal-data:
