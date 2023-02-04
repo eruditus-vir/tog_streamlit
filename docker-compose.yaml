@@ -20,8 +20,6 @@ services:
     restart: unless-stopped
     environment:
       DOMAINS: 'togdemo.info -> togdemo:8000'
+      STAGE: 'production' # Don't use production until 'staging' works, default is staging
     volumes:
       - https-portal-data:/var/lib/https-portal
-
-volumes:
-  https-portal-data:
