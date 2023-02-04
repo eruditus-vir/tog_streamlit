@@ -21,4 +21,6 @@ services:
     environment:
       WEBSOCKET: 'true'
       DOMAINS: 'togdemo.info -> togdemo:8000'
+      CLIENT_MAX_BODY_SIZE: '200M'
       STAGE: 'production' # Don't use production until 'staging' works, default is staging
+
