@@ -9,11 +9,22 @@ from enum import Enum
 from pillow_heif import register_heif_opener, register_avif_opener
 import logging
 
-register_heif_opener()
-register_avif_opener()
+
+@st.cache
+def get_coco_detector():
+    return YOLOv3_Darknet53(weights="model_weights/YOLOv3_Darknet53.h5")
+
+
+@st.cache
+def get_abo_detector():
+    return YOLOv3_Darknet53_ABO(weights='model_weights/YOLOv3_Darknet53_ABO.h5')
+
+
 EPS = 8 / 255.  # Hyperparameter: epsilon in L-inf norm
 EPS_ITER = 2 / 255.  # Hyperparameter: attack learning rate
 N_ITER = 10  # Hyperparameter: number of attack iterations
+COCO_DETECTOR = get_coco_detector()
+ABO_DETECTOR = get_abo_detector()
 
 
 def write_title():
@@ -55,9 +66,9 @@ class DetectionModelFactory:
     @classmethod
     def from_model_name(cls, model_name: str) -> YOLOv3:
         if model_name == ModelName.COCO.name:
-            return YOLOv3_Darknet53(weights="model_weights/YOLOv3_Darknet53.h5")
+            return COCO_DETECTOR
         elif model_name == ModelName.ABO.name:
-            return YOLOv3_Darknet53_ABO(weights='model_weights/YOLOv3_Darknet53_ABO.h5')
+            return ABO_DETECTOR
 
 
 def find_font_size(text, font, image, target_width_ratio):
@@ -138,6 +149,10 @@ def main():
             del name
     gc.collect()
 
+    if 'heif' in uploaded_file.name.lower():
+        register_heif_opener()
+    elif 'avif' in uploaded_file.name.lower():
+        register_avif_opener()
     # PIL LOAD
     image_processing_bar = st.progress(1)
     detector = DetectionModelFactory.from_model_name(st.session_state.detection_model)
