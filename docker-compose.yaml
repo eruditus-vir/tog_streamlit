@@ -19,7 +19,6 @@ services:
       - '443:443'
     restart: unless-stopped
     environment:
+      WEBSOCKET: 'true'
       DOMAINS: 'togdemo.info -> togdemo:8000'
 #      STAGE: 'production' # Don't use production until 'staging' works, default is staging
-    volumes:
-      - https-portal-data:/var/lib/https-portal
