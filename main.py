@@ -6,7 +6,10 @@ from tog.attacks import *
 import matplotlib.colors as mcolors
 from PIL import ImageDraw, ImageFont
 from enum import Enum
+from pillow_heif import register_heif_opener, register_avif_opener
 
+register_heif_opener()
+register_avif_opener()
 EPS = 8 / 255.  # Hyperparameter: epsilon in L-inf norm
 EPS_ITER = 2 / 255.  # Hyperparameter: attack learning rate
 N_ITER = 10  # Hyperparameter: number of attack iterations
@@ -117,14 +120,15 @@ def main():
     set_sidebar_select_box()
     write_title()
     uploaded_file = st.file_uploader(
-        "Choose an image to upload: {}".format(" ".join(["png", "jpg"])),
-        type=["png", "jpg"])
+        "Choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif"])),
+        type=["png", "jpg", "heic", "avif", "HEIC"])
 
     # uploading section
     show_uploaded_image = st.empty()
 
     if not uploaded_file or uploaded_file is None:
-        show_uploaded_image.info("Please choose an image to upload: {}".format(" ".join(["png", "jpg"])))
+        show_uploaded_image.info(
+            "Please choose an image to upload: {}".format(" ".join(["png", "jpg", "heic", "avif"])))
         return
     # garbage clean up
     import gc
