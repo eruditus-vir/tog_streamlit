@@ -11,6 +11,7 @@ from pillow_heif import register_heif_opener, register_avif_opener
 from ultralytics.yolo.data.augment import LetterBox
 import numpy as np
 import logging
+import cv2
 
 EPS = 8 / 255.  # Hyperparameter: epsilon in L-inf norm
 EPS_ITER = 2 / 255.  # Hyperparameter: attack learning rate
@@ -122,9 +123,11 @@ def main():
     total_process = 5
     i = 1
     benign_result = detector.predict(pil_image)[0]
-    benign_pil = benign_result.plot(im=resized_pil)
+
+    benign_pil = benign_result.plot(im=cv2.cvtColor(np.array(resized_pil), cv2.COLOR_BGR2RGB))
     tab_names.append('Benign (No Attack)')
     images.append(benign_pil)
+
     image_processing_bar.progress(int(100. / total_process) * i)
     i += 1
 
@@ -137,9 +140,10 @@ def main():
              }
     if batch['img'].shape[1] != 3:
         raise Exception('shape is wrong! {}'.format(batch['img'].shape))
-    fabrication_tensor = tog(batch, None, mode=TOGAttacks.fabrication)[0]
+    fabrication_tensor = tog(batch, None, mode=TOGAttacks.fabrication)[0].to('cpu')
     fabrication_result = detector.predict(transform_to_image(fabrication_tensor))[0]
-    fabrication_pil = Image.fromarray(fabrication_result.plot(im=resized_pil), mode='RGB')
+    fabrication_toplot = cv2.cvtColor(np.array(transform_to_image(fabrication_tensor)), cv2.COLOR_BGR2RGB)
+    fabrication_pil = Image.fromarray(fabrication_result.plot(im=fabrication_toplot), mode='RGB')
     tab_names.append('Fabrication')
     images.append(fabrication_pil)
     image_processing_bar.progress(int(100. / total_process) * i)
