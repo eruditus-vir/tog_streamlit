@@ -122,9 +122,8 @@ def main():
     # Prepare image for adversarial attack
     total_process = 5
     i = 1
-    benign_result = detector.predict(pil_image)[0]
-
-    benign_pil = benign_result.plot(im=cv2.cvtColor(np.array(resized_pil), cv2.COLOR_BGR2RGB))
+    benign_result = detector.predict(resized_pil)[0]
+    benign_pil = benign_result.plot(img=np.ascontiguousarray(resized_pil), pil=True)
     tab_names.append('Benign (No Attack)')
     images.append(benign_pil)
 
@@ -134,17 +133,13 @@ def main():
     ori_tensor = transform_to_prediction_tensor(resized_pil)
     batch = {'img': ori_tensor,
              'im_file': [''],
-             # 'ori_shape': [ori_tensor.shape[2:]],
-             # 'resized_shape': [ori_tensor.shape[2:]],
-             # 'ratio_pad': [[[1.0, 1.0], [0.0, 0.0]]]
              }
-    if batch['img'].shape[1] != 3:
-        raise Exception('shape is wrong! {}'.format(batch['img'].shape))
-    fabrication_tensor = tog(batch, None, mode=TOGAttacks.fabrication)[0].to('cpu')
-    fabrication_result = detector.predict(transform_to_image(fabrication_tensor))[0]
-    fabrication_toplot = cv2.cvtColor(np.array(transform_to_image(fabrication_tensor)), cv2.COLOR_BGR2RGB)
-    fabrication_pil = Image.fromarray(fabrication_result.plot(im=fabrication_toplot), mode='RGB')
+    fabrication_tensor = tog(batch, None, mode=TOGAttacks.fabrication)
+    fabrication_raw_pil = transform_to_image(fabrication_tensor[0])
+    fabrication_result = detector(fabrication_raw_pil)[0]
+    fabrication_pil = fabrication_result.plot(img=np.ascontiguousarray(fabrication_raw_pil), pil=True)
     tab_names.append('Fabrication')
+
     images.append(fabrication_pil)
     image_processing_bar.progress(int(100. / total_process) * i)
     i += 1
