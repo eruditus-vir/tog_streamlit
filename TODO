@@ -1,0 +1,8 @@
+1. Make script to download model if not found [DONE]
+2. Model loading for page
+    3. Button to select various model
+    4. Surrogate vs Target
+5. Attack
+6. Show
+7. Test web flow
+8. Deploy website on fractal
